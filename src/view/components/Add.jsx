@@ -4,6 +4,7 @@ export default (props) => {
     const [form] = Form.useForm()
     const handleOk = () => {
         props.addStudent(form.getFieldsValue())
+        form.resetFields()
         props.handleVisible(false)
     }
     return (

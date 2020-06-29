@@ -11,9 +11,6 @@ export default () => {
   const { search, tableProps,refresh } = useAntdTable(getList, {
     form
   })
-  console.log(useAntdTable(getList, {
-    form
-  }))
   const tailLayout = {
     wrapperCol: { span: 2 },
   };
@@ -36,13 +33,24 @@ export default () => {
   //增
   const addStudent =async (obj) => {
     const arr = JSON.parse(localStorage.list)
-    arr.push(obj)
+    let id=0
+    arr.forEach(item=>{
+      if(item.id>id) id=item.id
+    })
+    arr.push({...obj,id:id+1})
     localStorage.list = JSON.stringify(arr)
     refresh()
   }
-  const add=()=>{
+  //删
+  const handleDelete = (id) => {
+    console.log(id)
+    let arr = JSON.parse(localStorage.list)
+    arr=arr.filter(item=>item.id!=id)
+    localStorage.list = JSON.stringify(arr)
+    refresh()
+  }
+  const add = () => {
     setVisible(true)
-
   }
   const sleep = (time) => {
     return new Promise((resolve) => {
@@ -57,6 +65,16 @@ export default () => {
     {
       title: '年龄',
       dataIndex: 'age',
+    },
+    {
+      title:'操作',
+      render:(row)=>
+        <div>
+          <a>编辑</a>
+          <span style={{margin:'0 10px'}}>|</span>
+          <a onClick={()=>handleDelete(row.id)}>删除</a>
+        </div>
+      
     }
   ];
 
