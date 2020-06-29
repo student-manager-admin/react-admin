@@ -1,12 +1,28 @@
-import React, { useState } from 'react'
-import { Form, Input, Modal ,Button} from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Form, Input, Modal ,Button,Select, Slider} from 'antd'
+const {Option}=Select
 export default (props) => {
     const [form] = Form.useForm()
     const handleOk = () => {
-        props.addStudent(form.getFieldsValue())
+        const values=form.getFieldsValue()
+        if(props.student){
+            props.editStudent({...values,id:props.student.id})
+        }else{
+            props.addStudent(values)
+        }
         form.resetFields()
         props.handleVisible(false)
     }
+    const onGenderChange = value => {
+        form.setFieldsValue({ gender: value })
+    }
+    useEffect(() => {
+        if(props.student===null){
+            form.resetFields()
+        }else{
+            form.setFieldsValue(props.student)
+        }
+    }, [props.student])
     return (
         <Modal
             visible={props.visible}
@@ -26,9 +42,18 @@ export default (props) => {
                 <Form.Item
                     label='年龄'
                     name='age'
-
                 >
                     <Input type="text" />
+                </Form.Item>
+                <Form.Item
+                    label='性别'
+                    name='gender'
+                    initialValue={0}
+                >
+                   <Select defaultValue={0} onChange={onGenderChange}>
+                       <Option value={0}>男</Option>
+                       <Option value={1}>女</Option>
+                   </Select>
                 </Form.Item>
             </Form>
         </Modal>

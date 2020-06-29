@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import { useAntdTable } from 'ahooks';
-import { Table, Form, Input, Button } from 'antd'
+import { Table, Form, Input, Button,Select } from 'antd'
 import Add from './components/Add'
+const {Option}=Select
+
 export default () => {
   const [form] = Form.useForm()
   const [visible, setVisible] = useState(false)
+  const [student,setStudent]=useState({})
   const handleVisible = (boolean) => {
     setVisible(boolean)
   }
-  const { search, tableProps,refresh } = useAntdTable(getList, {
-    form
-  })
-  const tailLayout = {
-    wrapperCol: { span: 2 },
-  };
-  const { submit } = search;
+  const getStudentById = (id) => {
+    const arr = JSON.parse(localStorage.list)
+    const data = arr.filter(item => item.id === id)[0]
+    return data
+  }
+  const handleEdit = (id) => {
+    const data = getStudentById(id)
+    setStudent(data)
+    setVisible(true)
+  }
   //查
-  function getList(page, values) {
+  const getList = (page, values) => {
     console.log(page, values)
     if (!localStorage.list) {
-      localStorage.list = JSON.stringify([{ id: 1, name: 'lwp', age: 24 }])
+      localStorage.list = JSON.stringify([{ id: 1, name: 'lwp', age: 24,gender:0 }])
     }
     return new Promise(async (resolve) => {
       let res = JSON.parse(localStorage.list)
@@ -30,14 +36,35 @@ export default () => {
       resolve({ list: res })
     })
   }
+  const { search, tableProps,refresh } = useAntdTable(getList, {
+    form
+  })
+  const tailLayout = {
+    wrapperCol: { span: 2 },
+  };
+  const { submit } = search;
+  
   //增
-  const addStudent =async (obj) => {
+  const addStudent = (obj) => {
     const arr = JSON.parse(localStorage.list)
     let id=0
     arr.forEach(item=>{
       if(item.id>id) id=item.id
     })
     arr.push({...obj,id:id+1})
+    localStorage.list = JSON.stringify(arr)
+    refresh()
+  }
+  //改
+  const editStudent = value => {
+    let arr = JSON.parse(localStorage.list)
+    arr=arr.map(item=>{
+      if(item.id===value.id){
+        item=value
+      }
+      return item
+    })
+    console.log(arr)
     localStorage.list = JSON.stringify(arr)
     refresh()
   }
@@ -50,6 +77,7 @@ export default () => {
     refresh()
   }
   const add = () => {
+    setStudent(null)
     setVisible(true)
   }
   const sleep = (time) => {
@@ -67,14 +95,18 @@ export default () => {
       dataIndex: 'age',
     },
     {
+      title: '性别',
+      dataIndex: 'gender',
+      render:(text)=><div>{text===0?'男':'女'}</div>
+    },
+    {
       title:'操作',
       render:(row)=>
         <div>
-          <a>编辑</a>
+          <a onClick={()=>handleEdit(row.id)}>编辑</a>
           <span style={{margin:'0 10px'}}>|</span>
           <a onClick={()=>handleDelete(row.id)}>删除</a>
         </div>
-      
     }
   ];
 
@@ -88,9 +120,18 @@ export default () => {
         {...tailLayout}
         label="名字"
         name="name"
-        style={{ float: 'right' }}
       >
         <Input style={{ width: 200 }} />
+      </Form.Item>
+      <Form.Item
+        {...tailLayout}
+        label="性别"
+        name="gender"
+      >
+        <Select defaultValue={0} style={{width:100}}>
+                       <Option value={0}>男</Option>
+                       <Option value={1}>女</Option>
+                   </Select>
       </Form.Item>
       <Form.Item {...tailLayout}>
         <Button type="primary" onClick={submit} >
@@ -100,8 +141,12 @@ export default () => {
     </Form>
   )
   return (<div>
-    <Add visible={visible} handleVisible={handleVisible}
+    <Add
+      visible={visible} 
+      handleVisible={handleVisible}
+      student={student}
      addStudent={addStudent}
+     editStudent={editStudent}
      add={add}
       />
     {searchForm}
@@ -115,4 +160,3 @@ export default () => {
       />
   </div>)
 }
-
