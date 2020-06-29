@@ -4,7 +4,7 @@ import './App.css';
 import Student from './view/Student.jsx'
 function App() {
   return (
-    <div>
+    <div className='app'>
       <Student/>
     </div>
   );
