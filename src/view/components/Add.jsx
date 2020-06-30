@@ -34,16 +34,17 @@ export default (props) => {
                 form={form}
             >
                 <Form.Item
+                
                     label='名字'
                     name='name'
                 >
-                    <Input type="text" />
+                    <Input type="text" placeholder='请输入姓名' />
                 </Form.Item>
                 <Form.Item
                     label='年龄'
                     name='age'
                 >
-                    <Input type="text" />
+                    <Input type="text" placeholder='请输入年龄'/>
                 </Form.Item>
                 <Form.Item
                     label='性别'

@@ -22,15 +22,19 @@ export default () => {
     setVisible(true)
   }
   //查
-  const getList = (page, values) => {
-    console.log(page, values)
+  const getList = (page, value) => {
+    console.log(page, value)
     if (!localStorage.list) {
       localStorage.list = JSON.stringify([{ id: 1, name: 'lwp', age: 24,gender:0 }])
     }
     return new Promise(async (resolve) => {
       let res = JSON.parse(localStorage.list)
-      if (values.name) {
-        res = res.filter(item => item.name === values.name)
+      if (value.name) {
+        res = res.filter(item => item.name === value.name)
+      }
+      if(value.gender!==undefined){
+        res = res.filter(item =>{
+          return item.gender === value.gender})
       }
       await sleep(500)
       resolve({ list: res })
@@ -64,7 +68,6 @@ export default () => {
       }
       return item
     })
-    console.log(arr)
     localStorage.list = JSON.stringify(arr)
     refresh()
   }
@@ -128,7 +131,7 @@ export default () => {
         label="性别"
         name="gender"
       >
-        <Select defaultValue={0} style={{width:100}}>
+        <Select style={{width:100}} placeholder='全部' allowClear>
                        <Option value={0}>男</Option>
                        <Option value={1}>女</Option>
                    </Select>
@@ -154,7 +157,7 @@ export default () => {
       onClick={add}
     >新增</Button>
     <Table columns={columns} 
-    
+    bordered
     rowKey='id'
      {...tableProps}
       />
