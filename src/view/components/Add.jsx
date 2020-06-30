@@ -25,6 +25,7 @@ export default (props) => {
     }, [props.student])
     return (
         <Modal
+        title={props.modalTitle}
             visible={props.visible}
             handleVisible={props.handleVisible}
             onOk={handleOk}

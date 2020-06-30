@@ -8,6 +8,7 @@ export default () => {
   const [form] = Form.useForm()
   const [visible, setVisible] = useState(false)
   const [student,setStudent]=useState({})
+  const [modalTitle,setModalTitle]=useState('新增')
   const handleVisible = (boolean) => {
     setVisible(boolean)
   }
@@ -19,6 +20,7 @@ export default () => {
   const handleEdit = (id) => {
     const data = getStudentById(id)
     setStudent(data)
+    setModalTitle('编辑')
     setVisible(true)
   }
   //查
@@ -80,6 +82,7 @@ export default () => {
     refresh()
   }
   const add = () => {
+    setModalTitle('新增')
     setStudent(null)
     setVisible(true)
   }
@@ -145,6 +148,7 @@ export default () => {
   )
   return (<div>
     <Add
+    modalTitle={modalTitle}
       visible={visible} 
       handleVisible={handleVisible}
       student={student}
