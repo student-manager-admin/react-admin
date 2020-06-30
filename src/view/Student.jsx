@@ -3,7 +3,6 @@ import { useAntdTable } from 'ahooks';
 import { Table, Form, Input, Button,Select } from 'antd'
 import Add from './components/Add'
 const {Option}=Select
-
 export default () => {
   const [form] = Form.useForm()
   const [visible, setVisible] = useState(false)
@@ -25,7 +24,6 @@ export default () => {
   }
   //查
   const getList = (page, value) => {
-    console.log(page, value)
     if (!localStorage.list) {
       localStorage.list = JSON.stringify([{ id: 1, name: 'lwp', age: 24,gender:0 }])
     }
@@ -35,21 +33,16 @@ export default () => {
         res = res.filter(item => item.name === value.name)
       }
       if(value.gender!==undefined){
-        res = res.filter(item =>{
-          return item.gender === value.gender})
+        res = res.filter(item =>item.gender === value.gender)
       }
       await sleep(500)
-      resolve({ list: res })
+      resolve({ list: res,total:res.length })
     })
   }
   const { search, tableProps,refresh } = useAntdTable(getList, {
     form
   })
-  const tailLayout = {
-    wrapperCol: { span: 2 },
-  };
   const { submit } = search;
-  
   //增
   const addStudent = (obj) => {
     const arr = JSON.parse(localStorage.list)
@@ -75,7 +68,6 @@ export default () => {
   }
   //删
   const handleDelete = (id) => {
-    console.log(id)
     let arr = JSON.parse(localStorage.list)
     arr=arr.filter(item=>item.id!=id)
     localStorage.list = JSON.stringify(arr)
@@ -115,55 +107,28 @@ export default () => {
         </div>
     }
   ];
-
   const searchForm = (
-    <Form
-      form={form}
-      layout="inline"
-      style={{ marginBottom: 20 }}
-    >
-      <Form.Item
-        {...tailLayout}
-        label="名字"
-        name="name"
-      >
-        <Input style={{ width: 200 }} />
+    <Form form={form} layout="inline" style={{ marginBottom: 20 }}>
+      <Form.Item label="名字" name="name">
+        <Input style={{ width: 200 }} allowClear />
       </Form.Item>
-      <Form.Item
-        {...tailLayout}
-        label="性别"
-        name="gender"
-      >
+      <Form.Item label="性别" name="gender">
         <Select style={{width:100}} placeholder='全部' allowClear>
-                       <Option value={0}>男</Option>
-                       <Option value={1}>女</Option>
-                   </Select>
+          <Option value={0}>男</Option>
+          <Option value={1}>女</Option>
+        </Select>
       </Form.Item>
-      <Form.Item {...tailLayout}>
+      <Form.Item>
         <Button type="primary" onClick={submit} >
           查询
-    </Button>
+      </Button>
       </Form.Item>
     </Form>
   )
   return (<div>
-    <Add
-    modalTitle={modalTitle}
-      visible={visible} 
-      handleVisible={handleVisible}
-      student={student}
-     addStudent={addStudent}
-     editStudent={editStudent}
-     add={add}
-      />
+    <Add modalTitle={modalTitle} visible={visible} handleVisible={handleVisible} student={student} addStudent={addStudent} editStudent={editStudent} add={add}/>
     {searchForm}
-    <Button type='primary' style={{ marginBottom: 20 }}
-      onClick={add}
-    >新增</Button>
-    <Table columns={columns} 
-    bordered
-    rowKey='id'
-     {...tableProps}
-      />
+    <Button type='primary' style={{ marginBottom: 20 }} onClick={add} >新增</Button>
+    <Table columns={columns}  bordered rowKey='id' {...tableProps}/>
   </div>)
 }

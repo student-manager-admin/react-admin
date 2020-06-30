@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Form, Input, Modal ,Button,Select, Slider} from 'antd'
+import React, { useEffect } from 'react'
+import { Form, Input, Modal ,Select} from 'antd'
 const {Option}=Select
 export default (props) => {
     const [form] = Form.useForm()
@@ -24,34 +24,15 @@ export default (props) => {
         }
     }, [props.student])
     return (
-        <Modal
-        title={props.modalTitle}
-            visible={props.visible}
-            handleVisible={props.handleVisible}
-            onOk={handleOk}
-            onCancel={() => props.handleVisible(false)}
-        >
-            <Form
-                form={form}
-            >
-                <Form.Item
-                
-                    label='名字'
-                    name='name'
-                >
+        <Modal title={props.modalTitle} visible={props.visible} handleVisible={props.handleVisible} onOk={handleOk} onCancel={() => props.handleVisible(false)}>
+            <Form form={form}>
+                <Form.Item label='名字' name='name'>
                     <Input type="text" placeholder='请输入姓名' />
                 </Form.Item>
-                <Form.Item
-                    label='年龄'
-                    name='age'
-                >
+                <Form.Item label='年龄' name='age'>
                     <Input type="text" placeholder='请输入年龄'/>
                 </Form.Item>
-                <Form.Item
-                    label='性别'
-                    name='gender'
-                    initialValue={0}
-                >
+                <Form.Item label='性别' name='gender' initialValue={0}>
                    <Select defaultValue={0} onChange={onGenderChange}>
                        <Option value={0}>男</Option>
                        <Option value={1}>女</Option>
@@ -61,3 +42,4 @@ export default (props) => {
         </Modal>
     )
 }
+// 179
